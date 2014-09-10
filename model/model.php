@@ -7,6 +7,97 @@ define('DB_USER', $user);
 define('DB_PASSWORD', $pw);
 define('DB_DATABASE', 'project1');
 
+function add_shares($symbol, $quantity, $userid) {
+    
+    $quote = get_quote_data($symbol);
+    $price = $quote['last_trade'];
+
+    $total_cost = $price * $quantity;
+
+    // Connect to DB
+	$dsn = 'mysql:host='.DB_HOST.';dbname='.DB_DATABASE;
+	$dbh = new PDO($dsn, DB_USER, DB_PASSWORD);
+
+    // Check user balance
+    $stmt = $dbh->prepare("SELECT balance FROM users WHERE id=:userid");
+	$stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Not enough to buy stock
+    $balance = $stmt->fetch();
+    if ($balance[0] < $total_cost) {
+        return array('price' => "balance", 'total' => "");
+    }
+	
+	// Add shares to portfolio
+	$stmt = $dbh->prepare("INSERT INTO portfolios (userid, symbol, shares, buy_price) VALUES (:userid, :symbol, :quantity, :buy_price)");
+	$stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
+	$stmt->bindValue(':symbol', $symbol, PDO::PARAM_STR);
+	$stmt->bindValue(':quantity', $quantity, PDO::PARAM_INT);
+	$stmt->bindValue(':buy_price', $price, PDO::PARAM_INT);
+
+    if(!$stmt->execute()) {
+        return False;
+    }
+
+    // Update user balance.
+	$stmt = $dbh->prepare("UPDATE users SET balance=balance-:total_price WHERE id=:userid");
+	$stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
+	$stmt->bindValue(':total_price', $total_cost, PDO::PARAM_INT);
+
+    if (!$stmt->execute()) {
+        return False;
+    }
+
+    return array('price' => $price, 'total' => $total_cost);
+
+}
+
+function sell_share($symbol, $userid) {
+    $quote = get_quote_data($symbol);
+    $price = $quote['last_trade'];
+    
+	$dsn = 'mysql:host='.DB_HOST.';dbname='.DB_DATABASE;
+	$dbh = new PDO($dsn, DB_USER, DB_PASSWORD);
+	
+	// get user's portfolio
+	$stmt = $dbh->prepare("SELECT symbol, SUM(shares) AS shares FROM portfolios WHERE userid=:userid AND symbol=:symbol GROUP BY symbol");
+	$stmt->bindValue(':userid', $userid, PDO::PARAM_STR);
+	$stmt->bindValue(':symbol', $symbol, PDO::PARAM_STR);
+	if ($stmt->execute())
+	{
+	    $row = $stmt->fetch();
+        $total_shares = $row['shares'];
+        
+    } else {
+        return False;
+    }
+    
+	$stmt = $dbh->prepare("DELETE FROM portfolios WHERE symbol=:symbol AND userid=:userid");
+	$stmt->bindValue(':symbol', $symbol, PDO::PARAM_STR);
+	$stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
+	if (!$stmt->execute())
+	{
+        return False;
+	}
+
+    $total_sold = $total_shares * $price;
+	
+	$stmt = $dbh->prepare("UPDATE users SET balance=balance+:total_sold WHERE id=:userid");
+	$stmt->bindValue(':userid', $userid, PDO::PARAM_STR);
+	$stmt->bindValue(':total_sold', $total_sold, PDO::PARAM_INT);
+    if ($stmt->execute()) {
+        return array('stock' => $row, 'price' => $price);
+    }
+
+	// close database and return null 
+    //
+    //
+	$dbh = null;
+	return null;
+    
+}
+
 function get_quote_data($symbol) {
     $result = array();
     $url = "http://download.finance.yahoo.com/d/quotes.csv?s={$symbol}&f=sl1n&e=.csv";

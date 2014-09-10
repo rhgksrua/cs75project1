@@ -10,24 +10,13 @@ if (isset($_SESSION['userid'])) {
 <p>Balance: $ <?= number_format($balance, 2) ?></p>
 
 
-<table>
-    <tr>
-        <td>
-            <a href="/?page=portfolio">Portfolio</a></li>
-        </td>
-        <td>
-            <a href="/?page=buy">Buy</a></li>
-        </td>
-        <td>
-            <a href="/?page=sell">Sell</a></li>
-        </td>
-    </tr>
-</table>
+<a href="/?page=portfolio">Portfolio</a></li>
 
-<p>Quote</p>
-<form action='/?page=quote' method='post'>
+<form action='/' method='get'>
 
-    <input type='text' name='param'>
+    <label>Quote</label>
+    <input type='text' name='param' maxlength="6" size="8">
+    <input type='hidden' name='page' value='quote'>
     <input type='submit' value='Get Quote'>
 
 </form>

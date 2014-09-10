@@ -13,11 +13,16 @@ if (!isset($quote_data["symbol"])) {
         <th>Symbol</th>
         <th>Name</th>
         <th>Last Trade</th>
+        <td>Quantity</td>
     </tr>
     <tr>
         <td><?= htmlspecialchars($quote_data["symbol"]) ?></td>
         <td><?= htmlspecialchars($quote_data["name"]) ?></td>
         <td><?= htmlspecialchars($quote_data["last_trade"]) ?></td>
+    <form action='/?page=buy&symbol=<?= $quote_data["symbol"] ?>' method='post'>
+        <td><input type='text' name='quantity'></td>
+        <td><input type='submit' value='buy'></td>
+    </form>
     </tr>
 </table>
 
