@@ -7,18 +7,34 @@ if (isset($_SESSION['userid'])) {
 }
 ?>
 
+<p>Balance: $ <?= number_format($balance, 2) ?></p>
 
 
-<ul>
-    <li><a href="#">Portfolio</a></li>
-    <li><a href="#">Quote</a></li>
-    <li><a href="#">Buy</a></li>
-    <li><a href="#">Sell</a></li>
-</ul>
+<table>
+    <tr>
+        <td>
+            <a href="/?page=portfolio">Portfolio</a></li>
+        </td>
+        <td>
+            <a href="/?page=buy">Buy</a></li>
+        </td>
+        <td>
+            <a href="/?page=sell">Sell</a></li>
+        </td>
+    </tr>
+</table>
 
+<p>Quote</p>
+<form action='/?page=quote' method='post'>
+
+    <input type='text' name='param'>
+    <input type='submit' value='Get Quote'>
+
+</form>
 
 
 
 <?php
+
 render('footer');
 ?>

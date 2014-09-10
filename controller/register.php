@@ -11,7 +11,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['email']) && !empty($_POST['email'])) {
         $email = $_POST['email'];
         // REGEX.  Only checks for '@' in the email.
-        if (!preg_match('/.+\@.+/', $email)) {
+        //if (!preg_match('/.+\@.+/', $email)) {
+        if (!preg_match('/\w+/', $email)) {
             $errors[] = 'Invalid email';
         } else if (email_exists($email)) {
             $errors[] = 'Email already exists';
@@ -33,20 +34,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // $erros contain all the errors in the registration page.
     // If not empty, sends user to registration page.
     if (empty($errors)) {
-        if (add_user($_POST['email'], $_POST['password'])) {
-            $_SESSION['userid'] = $_POST['email'];
+        $userid = add_user($_POST['email'], $_POST['password']);
+        if ($userid) {
+            $_SESSION['userid'] = $userid;
             render('home');
+            exit();
         } else {
             // failed to add to database
             $errors[] = "Database Error";
             render('register', array('errors' => $errors, 'email' => $_POST['email']));
+            exit();
         }
     } else {
         render('register', array('errors' => $errors, 'email' => $_POST['email']));
+        exit();
     }
 
 } else {
     render('register');
+    exit();
 }
 
 ?>
