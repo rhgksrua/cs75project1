@@ -44,11 +44,11 @@ foreach ($portfolio as $holding) {
             $ <?= number_format($holding["current_price"], 2) ?>
         </td>
 
-        <form action='/?page=sell&symbol=<?= $holding['symbol'] ?>' method='post'>
         <td>
-            <input type='submit' value='sell'>
+            <form action='/?page=sell&amp;symbol=<?= $holding['symbol'] ?>' method='post'>
+                <input type='submit' value='sell'>
+            </form>
         </td>
-        </form>
 
     </tr>
 
@@ -58,5 +58,13 @@ foreach ($portfolio as $holding) {
 
 </table>
 
+
 <p>Total value during purchase: <b>$ <?= number_format($total_bought_cost, 2) ?></b></p>
 <p>Current value of holdings: <b>  $ <?= number_format($total_value, 2) ?></b></p>
+
+<?
+
+//render('addquote');
+
+render('footer');
+?>

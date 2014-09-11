@@ -2,12 +2,15 @@
 require_once('../includes/helper.php');
 if (!isset($quote_data["symbol"])) {
     render('header', array('title' => 'Quote'));
-    print "No symbol was provided, or no quote data was found.";
+    //render('addquote');
 } else {
     render('header', array('title' => 'Quote for ' . htmlspecialchars($quote_data["symbol"])));
 ?>
 
 
+<p>Balance: $ <?= number_format($balance, 2) ?></p>
+
+<form action='/?page=buy&amp;symbol=<?= $quote_data["symbol"] ?>' method='post'>
 <table>
     <tr>
         <th>Symbol</th>
@@ -19,12 +22,13 @@ if (!isset($quote_data["symbol"])) {
         <td><?= htmlspecialchars($quote_data["symbol"]) ?></td>
         <td><?= htmlspecialchars($quote_data["name"]) ?></td>
         <td><?= htmlspecialchars($quote_data["last_trade"]) ?></td>
-    <form action='/?page=buy&symbol=<?= $quote_data["symbol"] ?>' method='post'>
-        <td><input type='text' name='quantity'></td>
-        <td><input type='submit' value='buy'></td>
-    </form>
+        <td><input id='quantity' type='text' name='quantity'></td>
+        <td><input id='submit' type='submit' value='buy'></td>
     </tr>
 </table>
+</form>
+
+<script src="js/quote.js"></script>
 
 <?php
 }

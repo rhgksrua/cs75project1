@@ -7,6 +7,12 @@
         <a href="/">Home</a><br />
 <?php
 if (isset($_SESSION['userid'])) {
-    print "<a href='/?page=logout'>Log Out</a>";
+    print "<p><a href='/?page=logout'>Log Out</a></p>";
+    print "<p><a href='/?page=portfolio'>Portfolio</a></p>";
+    print "<p>userid: " . $_SESSION['userid'] . "</p>";
+    render('addquote');
+    render('user_balance');
+
 }
 ?>
+

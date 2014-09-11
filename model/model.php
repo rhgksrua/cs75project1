@@ -18,6 +18,11 @@ function add_shares($symbol, $quantity, $userid) {
 	$dsn = 'mysql:host='.DB_HOST.';dbname='.DB_DATABASE;
 	$dbh = new PDO($dsn, DB_USER, DB_PASSWORD);
 
+    // Begin Transaction
+    // ---------------------------------------------------------------
+
+    $dbh->beginTransaction();
+
     // Check user balance
     $stmt = $dbh->prepare("SELECT balance FROM users WHERE id=:userid");
 	$stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
@@ -37,6 +42,7 @@ function add_shares($symbol, $quantity, $userid) {
 	$stmt->bindValue(':buy_price', $price, PDO::PARAM_INT);
 
     if(!$stmt->execute()) {
+        $dbh->rollBack();
         return False;
     }
 
@@ -46,8 +52,13 @@ function add_shares($symbol, $quantity, $userid) {
 	$stmt->bindValue(':total_price', $total_cost, PDO::PARAM_INT);
 
     if (!$stmt->execute()) {
+        $dbh->rollBack();
         return False;
     }
+
+    $dbh->commit();
+
+    $dbh = null;
 
     return array('price' => $price, 'total' => $total_cost);
 
@@ -59,6 +70,9 @@ function sell_share($symbol, $userid) {
     
 	$dsn = 'mysql:host='.DB_HOST.';dbname='.DB_DATABASE;
 	$dbh = new PDO($dsn, DB_USER, DB_PASSWORD);
+
+    // Begin transaction
+    $dbh->beginTransaction();
 	
 	// get user's portfolio
 	$stmt = $dbh->prepare("SELECT symbol, SUM(shares) AS shares FROM portfolios WHERE userid=:userid AND symbol=:symbol GROUP BY symbol");
@@ -70,6 +84,8 @@ function sell_share($symbol, $userid) {
         $total_shares = $row['shares'];
         
     } else {
+        $dbh->rollBack();
+        $dbh = null;
         return False;
     }
     
@@ -78,6 +94,8 @@ function sell_share($symbol, $userid) {
 	$stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
 	if (!$stmt->execute())
 	{
+        $dbh->rollBack();
+        $dbh = null;
         return False;
 	}
 
@@ -87,12 +105,13 @@ function sell_share($symbol, $userid) {
 	$stmt->bindValue(':userid', $userid, PDO::PARAM_STR);
 	$stmt->bindValue(':total_sold', $total_sold, PDO::PARAM_INT);
     if ($stmt->execute()) {
+        $dbh->commit();
+        $dbh = null;
         return array('stock' => $row, 'price' => $price);
     }
+    $dbh->rollBack();
 
 	// close database and return null 
-    //
-    //
 	$dbh = null;
 	return null;
     
@@ -102,11 +121,18 @@ function get_quote_data($symbol) {
     $result = array();
     $url = "http://download.finance.yahoo.com/d/quotes.csv?s={$symbol}&f=sl1n&e=.csv";
     $handle = fopen($url, "r");
-    if ($row = fgetcsv($handle))
-        if (isset($row[1]))
+    if ($row = fgetcsv($handle)) {
+        if (isset($row[1])) {
+            if ($row[1] <= 0) {
+                return False;
+            }
             $result = array("symbol" => $row[0], 
                             "last_trade" => $row[1],
                             "name" => $row[2]);
+        }
+    } else {
+        return False;
+    }
     fclose($handle);
     return $result;
 }
@@ -158,19 +184,31 @@ function get_user_shares($userid)
 function add_user($email, $pwdhash) {
 	$dsn = 'mysql:host='.DB_HOST.';dbname='.DB_DATABASE;
 	$dbh = new PDO($dsn, DB_USER, DB_PASSWORD);
-    $stmt = $dbh->prepare("INSERT INTO users (email, password, registration_date) VALUES (:email, :pwdhash, NOW())");
+
+    // Begin transaction
+    $dbh->beginTransaction();
+
+    
+    $stmt = $dbh->prepare("INSERT INTO users (email, password, balance, registration_date) VALUES (:email, :pwdhash, 10000, NOW())");
     $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     $stmt->bindValue(':pwdhash', $pwdhash, PDO::PARAM_STR);
     if ($stmt->execute()) {
         if ($stmt->rowCount() == 1) {
             $userid = $dbh->lastInsertId();
+
+            $dbh->commit();
             $dbh = null;
 
+            
             return $userid;
         } else {
+            $dbh->rollBack();
+            $dbh = null;
             return False;
         }
     } else {
+        $dbh->rollBack();
+        $dbh = null;
         return False;
     }
 
@@ -222,9 +260,5 @@ function login_user($email, $password)
     $dbn = null;
 	return $userid;
 }
-
-
-
-
 
 ?>

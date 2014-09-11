@@ -10,7 +10,7 @@ if (isset($errors)) {
 }
 
 if (!isset($email)) {
-    $email = "";
+    $email = "''";
 }
 
 ?>
@@ -22,7 +22,7 @@ if (!isset($email)) {
                 Email:
             </td>
             <td>
-                <input type="textbox" width=16 name="email" value=<?= $email ?>>
+                <input id="focus" type="text" name="email" value=<?= $email ?>>
             </td>
         </tr>
         <tr>
@@ -30,7 +30,7 @@ if (!isset($email)) {
                 Password:
             </td>
             <td>
-                <input type="password" width=16 name="password">
+                <input type="password" name="password">
             </td>
         </tr>
     </table>

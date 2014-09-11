@@ -4,7 +4,7 @@ require_once('../model/model.php');
 require_once('../includes/helper.php');
 
 if (isset($_SESSION['userid'])) {
-    render('home');
+    header("Location: /?page=home");
     exit();
 }
 

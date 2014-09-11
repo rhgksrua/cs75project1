@@ -26,4 +26,16 @@ function render($template, $data = array())
     }
 }
 
+// check for login status
+function login_status() {
+    if (!isset($_SESSION['userid'])) {
+        header("Location: /?page=notloggedin");
+        exit();
+    }
+    return True;
+}
+
+    
+    
+
 ?>
