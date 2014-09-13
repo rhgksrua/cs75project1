@@ -1,0 +1,60 @@
+body {
+    background-color: #7f8c8d;
+    color: #f5f5f5;
+    text-align: center;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.home {
+    width: 219px;
+    height: 50px;
+    padding: 15px 25px;
+}
+
+#loginform{
+	margin:150px auto;
+	width:270px;
+}
+
+.input{
+	width:219px;
+    padding:15px 25px;
+    font-family:"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+	background: #f5f5f5;
+	border:none;
+	border-radius: 5px;
+	color: #333;
+	font-size: 14px;
+}
+
+
+.loginbutton{
+	background-color:#ffdd00;
+	border-radius:5px/5px;
+	-webkit-border-radius:5px/5px;
+	-moz-border-radius:5px/5px;
+	color:#333;
+	display:inline-block;
+	font-family:"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, sans-serif;
+	font-size:15px;
+	font-weight:bold;
+	width:270px;
+	text-align:center;
+	line-height:50px;
+	text-decoration:none;
+	height:50px;
+}
+
+.loginbutton:active {
+	position:relative;
+	top:1px;
+}
+
+.loginbutton:hover{
+	background-color:#e5bf05;
+}
