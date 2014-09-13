@@ -1,9 +1,9 @@
 
 <form action='/' method='get'>
-
-    <label>Quote</label>
-    <input class='input' id='focus' type='text' name='param' maxlength="6" size="8">
     <input type='hidden' name='page' value='quote'>
-    <input type='submit' value='Get Quote'>
+
+    <input class='input quote' id='focus' type='text' name='param' maxlength="6" size="8" placeholder="Quote">
+    <br />
+    <input class='quote button' type='submit' value='Get Quote'>
 
 </form>

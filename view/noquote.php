@@ -1,7 +1,7 @@
 <?php
 require_once('../includes/helper.php');
 
-render('header', array('title' => 'No Quote'));
+render('header', array('title' => 'No Quote', 'css' => 'home'));
 
 if ($symbol == '') {
 ?>
@@ -14,7 +14,8 @@ if ($symbol == '') {
 ?>
 
 <p>Balance: $ <?= number_format($balance, 2) ?></p>
-<p>No results for <b><?= htmlspecialchars($symbol) ?></b></p>
+<p><?= htmlspecialchars($symbol) ?></p>
+<p>Cannot retrieve quote</p>
 
 
 <?php

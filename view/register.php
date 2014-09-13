@@ -2,7 +2,7 @@
 
 require_once('../includes/helper.php');
 
-render('header', array('title' => 'Register'));
+render('header', array('title' => 'Register', 'css' => 'main'));
 
 //show errors
 if (isset($errors)) {
@@ -19,33 +19,13 @@ if (!isset($email)) {
 ?>
 
 <form action="/?page=register" method="post">
-    <table>
-        <tr>
-            <td>
-                Email:
-            </td>
-            <td>
-                <input class='input' type="text" name="email" value="<?= $email ?>">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Password:
-            </td>
-            <td>
-                <input class='input' type="password" name="password">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Password Again:
-            </td>
-            <td>
-                <input class='input' type="password" name="password2">
-            </td>
-        </tr>
-    </table>
-    <input type="submit" value="Register">
+    <input class='input' type="text" name="email" value="<?= $email ?>" placeholder="Email">
+    <br /><br />
+    <input class='input' type="password" name="password" placeholder="Password">
+    <br /><br />
+    <input class='input' type="password" name="password2" placeholder="Verfify Password">
+    <br /><br />
+    <input class="loginbutton" type="submit" value="Register">
 </form>
 
 <p><a href="/?page=login">Log In</a></p>

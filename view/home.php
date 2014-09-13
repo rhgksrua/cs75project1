@@ -3,7 +3,7 @@ require_once('../includes/helper.php');
 
 login_status();
 
-render('header', array('title' => 'C$75 Finance'));
+render('header', array('title' => 'C$75 Finance', 'css' => 'home'));
 
 ?>
 

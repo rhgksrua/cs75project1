@@ -1,10 +1,10 @@
 <?php
 require_once('../includes/helper.php');
 if (!isset($quote_data["symbol"])) {
-    render('header', array('title' => 'Quote'));
-    //render('addquote');
+    render('header', array('title' => 'Quote', 'css' => 'home'));
 } else {
-    render('header', array('title' => 'Quote for ' . htmlspecialchars($quote_data["symbol"])));
+    render('header', array('title' => 'Quote for ' . htmlspecialchars($quote_data["symbol"]), 'css' => 'home'));
+
 ?>
 
 
@@ -16,7 +16,7 @@ if (!isset($quote_data["symbol"])) {
         <th>Symbol</th>
         <th>Name</th>
         <th>Last Trade</th>
-        <td>Quantity</td>
+        <th>Quantity</th>
     </tr>
     <tr>
         <td><?= htmlspecialchars($quote_data["symbol"]) ?></td>
